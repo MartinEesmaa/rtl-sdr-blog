@@ -82,6 +82,7 @@ void usage(void)
 		"\t[   noxon\t\tTerratec NOXON DAB Stick]\n"
 		"\t[   terratec_black\tTerratec T Stick Black]\n"
 		"\t[   terratec_plus\tTerratec T Stick+ (DVB-T/DAB)]\n"
+		"\t[   rtlsdrblogv4\t\tRTLSDRBlogV4]\n"
 		"\t[-w <filename> write dumped file to device]\n"
 		"\t[-r <filename> dump EEPROM to file]\n"
 		"\t[-h display this help text]\n"
@@ -181,6 +182,7 @@ enum configs {
 	TERRATEC_NOXON,
 	TERRATEC_T_BLACK,
 	TERRATEC_T_PLUS,
+	EMERGENCY_RTLVENDOR,
 };
 
 void gen_default_conf(rtlsdr_config_t *conf, int config)
@@ -236,6 +238,17 @@ void gen_default_conf(rtlsdr_config_t *conf, int config)
 		conf->product_id = 0x00d7;
 		strcpy(conf->manufacturer, "Realtek");
 		strcpy(conf->product, "RTL2838UHIDIR");
+		strcpy(conf->serial, "00000001");
+		conf->have_serial = 1;
+		conf->enable_bt = 1;
+		conf->remote_wakeup = 0;
+		break;
+	case EMERGENCY_RTLVENDOR:
+		fprintf(stderr, "RTLSDRBlog V4\n");
+		conf->vendor_id = 0x0bda;
+		conf->product_id = 0x2838;
+		strcpy(conf->manufacturer, "RTLSDRBlog");
+		strcpy(conf->product, "Blog V4");
 		strcpy(conf->serial, "00000001");
 		conf->have_serial = 1;
 		conf->enable_bt = 1;
@@ -297,6 +310,8 @@ int main(int argc, char **argv)
 				default_config = TERRATEC_T_BLACK;
 			else if (!strcmp(optarg, "terratec_plus"))
 				default_config = TERRATEC_T_PLUS;
+			else if (!strcmp(optarg, "rtlsdrblogv4"))
+				default_config = EMERGENCY_RTLVENDOR;
 
 			if (default_config != CONF_NONE)
 				change = 1;
