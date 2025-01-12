@@ -181,6 +181,7 @@ enum configs {
 	TERRATEC_NOXON,
 	TERRATEC_T_BLACK,
 	TERRATEC_T_PLUS,
+	EMERGENCY_RTLVENDOR,
 };
 
 void gen_default_conf(rtlsdr_config_t *conf, int config)
@@ -236,6 +237,17 @@ void gen_default_conf(rtlsdr_config_t *conf, int config)
 		conf->product_id = 0x00d7;
 		strcpy(conf->manufacturer, "Realtek");
 		strcpy(conf->product, "RTL2838UHIDIR");
+		strcpy(conf->serial, "00000001");
+		conf->have_serial = 1;
+		conf->enable_bt = 1;
+		conf->remote_wakeup = 0;
+		break;
+	case EMERGENCY_RTLVENDOR:
+		fprintf(stderr, "Realtek default OEM with EEPROM (emergency)\n");
+		conf->vendor_id = 0x1209;
+		conf->product_id = 0x2838;
+		strcpy(conf->manufacturer, "RTLSDRBlog");
+		strcpy(conf->product, "Blog V4");
 		strcpy(conf->serial, "00000001");
 		conf->have_serial = 1;
 		conf->enable_bt = 1;
@@ -297,6 +309,8 @@ int main(int argc, char **argv)
 				default_config = TERRATEC_T_BLACK;
 			else if (!strcmp(optarg, "terratec_plus"))
 				default_config = TERRATEC_T_PLUS;
+			else if (!strcmp(optarg, "rtlsdrblogv4_emergency"))
+				default_config = EMERGENCY_RTLVENDOR;
 
 			if (default_config != CONF_NONE)
 				change = 1;
